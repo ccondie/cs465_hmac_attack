@@ -1,0 +1,17 @@
+def run():
+    hex160bit = 0x0000f4b645e89faaec2ff8e443c595009c16dbdfba4b
+    bin160bit = 0b1111010010110110010001011110100010011111101010101110110000101111111110001110010001000011110001011001010100000000100111000001011011011011110111111011101001001011
+
+    hexstr = format(bin160bit, '040x')
+    print(hexstr)
+
+    for x in range(0,5):
+        numstr = hexstr[x*8:(x+1)*8]
+        output = int(numstr, 16)
+
+        print(format(output, '#x'))
+
+
+
+
+run()
