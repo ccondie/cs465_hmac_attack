@@ -2,11 +2,10 @@ import binascii
 
 
 def run():
-    message = 'ca t'.encode()
-    dummy = message.zfill(7)
-    print(dummy)
-    print(len(message.zfill(7)))
+    length = 567
+    length_bin = bin(length)
 
-    print(b''.join([message, dummy]))
+
 
 run()
+

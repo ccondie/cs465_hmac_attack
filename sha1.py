@@ -102,15 +102,28 @@ class Sha1Hash(object):
             0xC3D2E1F0,
         )
 
-    def set_h(self, bit160iv):
-        data_str = format(bit160iv, 'x')
+    def set_h(self, iv_str):
+        # iv_str = format(bit160iv, 'x')
         new_h = []
         for x in range(0, 5):
-            chunk = int(data_str[x * 8:(x + 1) * 8], 16)
+            chunk = int(iv_str[x * 8:(x + 1) * 8], 16)
             new_h.append(chunk)
         # self._h = (new_h[0], new_h[1], new_h[2], new_h[3], new_h[4])
         self._h = tuple(new_h)
+        print('\t\t\t\t',end='')
+        for el in self._h:
+            print(format(el, '#x'),end=', ')
+        print()
         return self
+
+    # def set_h(self, iv_b):
+    #     new_h = []
+    #     for x in range(0, 5):
+    #         chunk = int(data_str[x * 8:(x + 1) * 8], 16)
+    #         new_h.append(chunk)
+    #     # self._h = (new_h[0], new_h[1], new_h[2], new_h[3], new_h[4])
+    #     self._h = tuple(new_h)
+    #     return self
 
     def update(self, arg):
         """Update the current digest.
