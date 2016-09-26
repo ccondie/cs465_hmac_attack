@@ -105,11 +105,14 @@ def extend_message(msg_bytes, hmac, extend_bytes):
     # append the length of the original message to the end of the padding
     msg_bytes = msg_bytes + msg_len_b
 
-    # append padding onto extend_bytes to match 512 bits
-    extend_len = len(extend_bytes)
-    extend_bits = extend_len * 8
-    extend_pad_bits = 512 - (extend_bits % 512)
-    extend_pad_bytes = int(extend_pad_bits / 8)
+    print('CHECK msg_bytes:',end=' ')
+    print(len(msg_bytes) * 8)
+
+    # # append padding onto extend_bytes to match 512 bits
+    # extend_len = len(extend_bytes)
+    # extend_bits = extend_len * 8
+    # extend_pad_bits = 512 - (extend_bits % 512)
+    # extend_pad_bytes = int(extend_pad_bits / 8)
 
     # for i in range(0, extend_pad_bytes):
     #     extend_bytes = extend_bytes + bytearray(1)
@@ -132,7 +135,7 @@ def extend_message(msg_bytes, hmac, extend_bytes):
     print()
 
     # calculate new hmac from extend_bytes + padding + new_message_length with original mac as IV of sha1
-    newhmac = sha1.sha1(extend_bytes, hmac)
+    newhmac = sha1.sha1(extend_bytes, hmac, int((len(msg_bytes) * 8 + 128)/8))
     print('newhmac:\t\t', end=' ')
     print(newhmac)
 

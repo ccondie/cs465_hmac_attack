@@ -156,6 +156,10 @@ class Sha1Hash(object):
         """Produce the final hash value (big-endian) as a hex string"""
         return '%08x%08x%08x%08x%08x' % self._produce_digest()
 
+    def set_message_length(self, byte_len):
+        self._message_byte_length = byte_len
+        return self
+
     def _produce_digest(self):
         """Return finalized digest variables for the data processed so far."""
         # Pre-processing:
@@ -181,11 +185,11 @@ class Sha1Hash(object):
         return _process_chunk(message[64:], *h)
 
 
-def sha1(data, iv=None, ):
+def sha1(data, iv=None, start_len=None):
     if iv is None:
         return Sha1Hash().update(data).hexdigest()
     else:
-        return Sha1Hash().set_h(iv).update(data).hexdigest()
+        return Sha1Hash().set_h(iv).set_message_length(start_len).update(data).hexdigest()
 
 
 if __name__ == '__main__':
