@@ -1,26 +1,5 @@
 import sha1
 import hashlib
-import hmac
-
-
-def run():
-    print('sha1:\t\t', end='')
-    print(sha1.sha1(b'this is data'))
-
-    print('hashlib:\t', end='')
-    print(hashlib.sha1(b'this is data').hexdigest())
-
-    print('sha1:\t\t', end='')
-    print(sha1.sha1(b'this is data', 0x67452301EFCDAB8998BADCFE10325476C3D2E1F0))
-
-    print()
-
-    print('sha1:\t\t', end='')
-    print(sha1.sha1(b'this is data', 0xf4b645e89faaec2ff8e443c595009c16dbdfba4b))
-
-    print('sha1:\t\t', end='')
-    print(sha1.sha1(b'this is data', 0xf4b645e89faaec2ff8e443c595009c16dbdfba4b))
-
 
 def test_run():
     print()
@@ -37,24 +16,20 @@ def test_run():
     print('msg: ' + msg)
     print('key: ' + str(key_16b))
 
-    hmac = calc_hmac(key_16b, msg_b)
-    print('original hmac:', end=' ')
-    print(hmac)
+    orig_hmac = calc_hmac(key_16b, msg_b)
 
-    ext_tup = extend_message(msg_b, hmac, ext_b)
+    ext_tup = extend_message(msg_b, orig_hmac, ext_b)
 
     print()
     print('final message:', end=' ')
     for el in ext_tup[1]:
-        print(format(el,'x'),end='')
+        print(format(el, 'x'), end='')
     print()
 
     print('final hmac:', end=' ')
     print(ext_tup[0])
 
-    # check_hmac = calc_hmac(key_16b, ext_tup[1])
-    # print('check hmac:', end=' ')
-    # print(check_hmac)
+    check_hmac = calc_hmac(key_16b, ext_tup[1])
 
 
 def calc_hmac(key, msg):
@@ -66,27 +41,33 @@ def calc_hmac(key, msg):
     print('combo_bytes:', end=' ')
     print(combo_bytes)
 
-    combo_bits = len(combo_bytes) * 8
-    print('combe_bytes bit length:', end=' ')
-    print(combo_bits)
+    # combo_bits = len(combo_bytes) * 8
+    # print('combe_bytes bit length:', end=' ')
+    # print(combo_bits)
 
     # lenth_addition = bytes([combo_bits])
     # print(lenth_addition)
 
-    bits_needed = 512 - (combo_bits % 512)
-    print('padding bit length:', end=' ')
-    print(bits_needed)
+    # bits_needed = 512 - (combo_bits % 512)
+    # print('padding bit length:', end=' ')
+    # print(bits_needed)
+    #
+    # print(bits_needed / 8)
+    # bytes_needed = int(bits_needed / 8)
 
-    print(bits_needed / 8)
-    bytes_needed = int(bits_needed / 8)
-
-    for i in range(0, bytes_needed):
-        combo_bytes = combo_bytes + bytearray(1)
+    # for i in range(0, bytes_needed):
+    #     combo_bytes = combo_bytes + bytearray(1)
 
     # append the length onto combo_bytes
     # MISSING CODE HERE
 
-    return sha1.sha1(combo_bytes)
+    return_me = sha1.sha1(combo_bytes)
+    print('calculated hmac:', end=' ')
+    for el in return_me:
+        print(el, end='')
+    print()
+
+    return return_me
 
 
 def extend_message(msg_bytes, hmac, extend_bytes):
@@ -99,28 +80,42 @@ def extend_message(msg_bytes, hmac, extend_bytes):
     for el in msg_bytes:
         print(format(el, 'x'), end=' ')
     print()
+    # hmac = 'f4b645e89faaec2ff8e443c595009c16dbdfba4b'
     print('hmac:\t\t\t', end=' ')
     print(hmac)
 
     # calculate the padding on the original message
-    orig_msg_len = 128 + len(msg_bytes) * 8
-    pad_len = 512 - (orig_msg_len % 512)
-    print(pad_len / 8)
+    msg_len_storage_bits = 64
+    msg_len = 128 + len(msg_bytes) * 8
+    print('msg_len:\t\t', end=' ')
+    print(msg_len)
+
+    msg_len_b = bytes.fromhex(format(msg_len,'016x'))
+    print('msg_len_b:\t\t', end=' ')
+    print(msg_len_b)
+
+    pad_len = 512 - ((msg_len + msg_len_storage_bits) % 512)
     pad_bytes = int(pad_len / 8)
 
     # append the padding onto the original message
-    for i in range(0, pad_bytes):
+    msg_bytes = msg_bytes + b'\x80'
+    for i in range(1, pad_bytes):
         msg_bytes = msg_bytes + bytearray(1)
+
+    # append the length of the original message to the end of the padding
+    msg_bytes = msg_bytes + msg_len_b
 
     # append padding onto extend_bytes to match 512 bits
     extend_len = len(extend_bytes)
     extend_bits = extend_len * 8
     extend_pad_bits = 512 - (extend_bits % 512)
-    print(extend_pad_bits / 8)
     extend_pad_bytes = int(extend_pad_bits / 8)
 
     # for i in range(0, extend_pad_bytes):
     #     extend_bytes = extend_bytes + bytearray(1)
+
+    print('extend:\t\t\t',end=' ')
+    print(extend_bytes)
 
     print('extend_bytes:\t', end=' ')
     for el in extend_bytes:
