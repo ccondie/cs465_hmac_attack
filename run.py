@@ -44,10 +44,9 @@ def calc_hmac(key, msg):
     print(combo_bytes)
 
     return_me = sha1.sha1(combo_bytes)
-    print('calculated hmac:', end=' ')
-    for el in return_me:
-        print(el, end='')
-    print()
+    print('calculated hmac:',end=' ')
+    print(return_me)
+
     print('----- End calc_hmac')
 
     return return_me
