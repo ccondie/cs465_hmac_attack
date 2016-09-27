@@ -19,19 +19,21 @@ def test_run():
     print('key: ' + str(key_16b))
 
     orig_hmac = calc_hmac(key_16b, msg_b)
+    orig_hmac = 'f4b645e89faaec2ff8e443c595009c16dbdfba4b'
 
     ext_tup = extend_message(msg_b, orig_hmac, ext_b)
 
     print()
     print('final message:\t', end=' ')
     for el in ext_tup[1]:
-        print(format(el, 'x'), end='')
+        print(format(el, '02x'), end='')
     print()
 
     print('final hmac:\t\t', end=' ')
     print(ext_tup[0])
 
     check_hmac = calc_hmac(key_16b, ext_tup[1])
+    print(hashlib.sha1(key_16b + ext_tup[1]).hexdigest())
 
 
 def calc_hmac(key, msg):
@@ -75,15 +77,21 @@ def extend_message(msg_bytes, hmac, extend_bytes):
     # calculate the padding on the original message
     msg_len_storage_bits = 64
     msg_len = 128 + len(msg_bytes) * 8
-    print('msg_len:\t\t', end=' ')
-    print(msg_len)
+    print('msg_len_w_key:\t', end=' ')
+    print(msg_len, end=' bits\n')
 
     msg_len_b = bytes.fromhex(format(msg_len, '016x'))
     print('msg_len_b:\t\t', end=' ')
     print(msg_len_b)
 
+    print('msg_len_b_len:\t',end=' ')
+    print(msg_len_storage_bits, end=' bits\n')
+
     pad_len = 512 - ((msg_len + msg_len_storage_bits) % 512)
     pad_bytes = int(pad_len / 8)
+    print('pad_bytes_num:\t',end=' ')
+    print(pad_bytes,end=' bytes - ')
+    print(pad_bytes * 8, end=' bits\n')
 
     # append the padding onto the original message
     msg_bytes = msg_bytes + b'\x80'
@@ -94,7 +102,8 @@ def extend_message(msg_bytes, hmac, extend_bytes):
     msg_bytes = msg_bytes + msg_len_b
 
     print('CHECK msg_bytes:', end=' ')
-    print(len(msg_bytes) * 8)
+    print(len(msg_bytes),end=' bytes - ')
+    print(len(msg_bytes) * 8, end=' bits\n')
 
     print()
     print('ext:   \t\t\t', end=' ')
