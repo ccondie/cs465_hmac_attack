@@ -112,15 +112,6 @@ class Sha1Hash(object):
         self._h = tuple(new_h)
         return self
 
-    # def set_h(self, iv_b):
-    #     new_h = []
-    #     for x in range(0, 5):
-    #         chunk = int(data_str[x * 8:(x + 1) * 8], 16)
-    #         new_h.append(chunk)
-    #     # self._h = (new_h[0], new_h[1], new_h[2], new_h[3], new_h[4])
-    #     self._h = tuple(new_h)
-    #     return self
-
     def update(self, arg):
         """Update the current digest.
         This may be called repeatedly, even after calling digest or hexdigest.
@@ -128,10 +119,10 @@ class Sha1Hash(object):
         Arguments:
             arg: bytes, bytearray, or BytesIO object to read from.
         """
-        print('self._h:\t\t', end=' ')
-        for el in self._h:
-            print(format(el, '#x'), end=', ')
-        print()
+        # print('self._h:\t\t', end=' ')
+        # for el in self._h:
+        #     print(format(el, '#x'), end=', ')
+        # print()
 
         if isinstance(arg, (bytes, bytearray)):
             arg = io.BytesIO(arg)
